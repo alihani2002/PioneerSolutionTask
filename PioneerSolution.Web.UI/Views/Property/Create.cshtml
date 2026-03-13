@@ -4,69 +4,154 @@
     ViewData["Title"] = "Create Property";
 }
 
-<div class="container mt-4">
-    <h2>Create New Property</h2>
-    <p class="text-muted">Define a new custom property that will appear on the Employee creation form.</p>
+<!-- Page Header -->
+<div class="page-header animate-fade-in">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1><i class="fas fa-plus-circle me-2"></i>Create New Property</h1>
+                <p class="subtitle mb-0">Define a new custom property that will appear on the Employee creation form</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a asp-action="Index" class="btn btn-professional btn-outline-light">
+                    <i class="fas fa-arrow-left me-1"></i> Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <div class="card shadow-sm mt-3">
+<div class="container">
+    <div class="card-professional animate-fade-in animate-delay-1">
         <div class="card-body">
-            <form asp-action="Create" method="post" id="propertyForm">
+            <form asp-action="Create" method="post" id="propertyForm" class="needs-validation" novalidate>
                 @Html.AntiForgeryToken()
 
-                <div class="mb-3">
-                    <label asp-for="Name" class="form-label fw-bold">Property Name</label>
-                    <input asp-for="Name" class="form-control" placeholder="e.g., Date of Birth" required />
-                    <span asp-validation-for="Name" class="text-danger"></span>
+                <!-- Property Name -->
+                <div class="mb-4">
+                    <label asp-for="Name" class="form-label fw-bold">
+                        <i class="fas fa-tag me-1 text-primary"></i> Property Name
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light">
+                            <i class="fas fa-pen"></i>
+                        </span>
+                        <input asp-for="Name" class="form-control" placeholder="e.g., Date of Birth" required />
+                    </div>
+                    <span asp-validation-for="Name" class="text-danger small"></span>
                 </div>
 
-                @* ===== Property Type as Radio Buttons ===== *@
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Property Type</label>
-                    <div class="d-flex flex-wrap gap-3 mt-1">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="Type" id="typeString" value="String" checked />
-                            <label class="form-check-label" for="typeString">String</label>
+                <!-- Property Type -->
+                <div class="mb-4">
+                    <label class="form-label fw-bold">
+                        <i class="fas fa-code me-1 text-primary"></i> Property Type
+                    </label>
+                    <div class="row g-3 mt-1">
+                        <div class="col-6 col-md-3">
+                            <div class="form-check-custom card h-100 p-3 border-2">
+                                <input class="form-check-input" type="radio" name="Type" id="typeString" value="String" checked />
+                                <label class="form-check-label fw-medium" for="typeString">
+                                    <i class="fas fa-font d-block mb-1 text-info"></i> String
+                                </label>
+                            </div>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="Type" id="typeInteger" value="Integer" />
-                            <label class="form-check-label" for="typeInteger">Integer</label>
+                        <div class="col-6 col-md-3">
+                            <div class="form-check-custom card h-100 p-3 border-2">
+                                <input class="form-check-input" type="radio" name="Type" id="typeInteger" value="Integer" />
+                                <label class="form-check-label fw-medium" for="typeInteger">
+                                    <i class="fas fa-hashtag d-block mb-1 text-info"></i> Integer
+                                </label>
+                            </div>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="Type" id="typeDate" value="Date" />
-                            <label class="form-check-label" for="typeDate">Date</label>
+                        <div class="col-6 col-md-3">
+                            <div class="form-check-custom card h-100 p-3 border-2">
+                                <input class="form-check-input" type="radio" name="Type" id="typeDate" value="Date" />
+                                <label class="form-check-label fw-medium" for="typeDate">
+                                    <i class="fas fa-calendar-alt d-block mb-1 text-warning"></i> Date
+                                </label>
+                            </div>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="Type" id="typeDropdown" value="Dropdown" />
-                            <label class="form-check-label" for="typeDropdown">Dropdown</label>
+                        <div class="col-6 col-md-3">
+                            <div class="form-check-custom card h-100 p-3 border-2">
+                                <input class="form-check-input" type="radio" name="Type" id="typeDropdown" value="Dropdown" />
+                                <label class="form-check-label fw-medium" for="typeDropdown">
+                                    <i class="fas fa-list-ul d-block mb-1 text-success"></i> Dropdown
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="mb-3 form-check">
-                    <input asp-for="IsRequired" class="form-check-input" />
-                    <label asp-for="IsRequired" class="form-check-label fw-bold">Is Required?</label>
+                <!-- Required Checkbox -->
+                <div class="mb-4">
+                    <div class="form-check-custom card p-3 border-2 bg-light">
+                        <div class="d-flex align-items-center">
+                            <input asp-for="IsRequired" class="form-check-input me-3" style="width: 20px; height: 20px;" />
+                            <label asp-for="IsRequired" class="form-check-label fw-bold mb-0">
+                                <i class="fas fa-asterisk me-1 text-danger"></i> Is Required?
+                            </label>
+                        </div>
+                        <small class="text-muted ms-4">If enabled, this property must be filled when creating an employee</small>
+                    </div>
                 </div>
 
-                @* ===== Dropdown Choices — Dynamic Add/Remove ===== *@
-                <div class="mb-3" id="dropdownValuesSection" style="display: none;">
-                    <label class="form-label fw-bold">Dropdown Choices</label>
-                    <div id="choicesList"></div>
-                    <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="addChoiceBtn">
-                        + Add Choice
+                <!-- Dropdown Choices Section -->
+                <div class="mb-4" id="dropdownValuesSection" style="display: none;">
+                    <div class="card border-2 border-primary bg-light">
+                        <div class="card-body">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-list me-1 text-primary"></i> Dropdown Choices
+                            </label>
+                            <small class="d-block text-muted mb-3">Add the expected options for this dropdown (comma-separated values will be stored)</small>
+                            
+                            <div id="choicesList"></div>
+                            
+                            <button type="button" class="btn btn-professional btn-outline-primary" id="addChoiceBtn">
+                                <i class="fas fa-plus me-1"></i> Add Choice
+                            </button>
+                            
+                            <!-- Hidden field that will hold the comma-joined values on submit -->
+                            <input type="hidden" name="DropdownExpectedValues" id="hiddenDropdownValues" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                    <a asp-action="Index" class="btn btn-professional btn-secondary">
+                        <i class="fas fa-times me-1"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-professional btn-primary">
+                        <i class="fas fa-save me-1"></i> Create Property
                     </button>
-                    <small class="d-block text-muted mt-1">Add the expected options for this dropdown.</small>
-                    <!-- Hidden field that will hold the comma-joined values on submit -->
-                    <input type="hidden" name="DropdownExpectedValues" id="hiddenDropdownValues" />
-                </div>
-
-                <div class="mt-4">
-                    <button type="submit" class="btn btn-primary px-4">Create</button>
-                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<style>
+    .form-check-custom {
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .form-check-custom:hover {
+        background-color: #f8f9fa !important;
+    }
+    
+    .form-check-input:checked + .form-check-label {
+        color: var(--accent-color);
+    }
+    
+    .form-check-input:checked ~ .form-check-label {
+        color: var(--accent-color);
+    }
+    
+    input[type="radio"]:checked + label {
+        color: var(--accent-color);
+    }
+</style>
 
 @section Scripts {
     <script>
@@ -75,6 +160,16 @@
             radio.addEventListener('change', function () {
                 var section = document.getElementById('dropdownValuesSection');
                 section.style.display = this.value === 'Dropdown' ? 'block' : 'none';
+                
+                // Update card styling
+                document.querySelectorAll('.form-check-custom').forEach(function(card) {
+                    card.classList.remove('border-primary');
+                    card.style.backgroundColor = '';
+                });
+                
+                if (this.value === 'Dropdown') {
+                    this.closest('.form-check-custom').classList.add('border-primary');
+                }
             });
         });
 
@@ -88,8 +183,10 @@
             var row = document.createElement('div');
             row.className = 'd-flex align-items-center gap-2 mb-2';
             row.innerHTML =
+                '<span class="input-group-text bg-white"><i class="fas fa-grip-vertical text-muted"></i></span>' +
                 '<input type="text" class="form-control choice-input" placeholder="Enter choice value" value="' + value + '" />' +
-                '<button type="button" class="btn btn-outline-danger btn-sm remove-choice-btn">&times;</button>';
+                '<button type="button" class="btn btn-outline-danger btn-sm remove-choice-btn" title="Remove">' +
+                '<i class="fas fa-times"></i></button>';
             list.appendChild(row);
 
             row.querySelector('.remove-choice-btn').addEventListener('click', function () {
@@ -114,5 +211,21 @@
             document.getElementById('dropdownValuesSection').style.display = 'block';
             addChoiceRow('');
         }
+
+        // Form validation
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
     </script>
 }
