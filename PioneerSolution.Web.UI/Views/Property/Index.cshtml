@@ -5,136 +5,82 @@
 }
 
 <!-- Page Header -->
-<div class="page-header animate-fade-in">
+<div class="page-header">
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-8">
-                <h1><i class="fas fa-cogs me-2"></i>Property Definitions</h1>
-                <p class="subtitle mb-0">Define custom properties that will appear on employee forms</p>
-            </div>
-            <div class="col-md-4 text-md-end">
-                <a asp-action="Create" class="btn btn-professional btn-success">
-                    <i class="fas fa-plus-circle me-1"></i> Add New Property
-                </a>
-            </div>
-        </div>
+        <h1><i class="fas fa-cogs"></i> Properties</h1>
+        <p class="subtitle">Define custom properties for employees</p>
     </div>
 </div>
 
 <div class="container">
+    <!-- Actions -->
+    <div class="row mb-3">
+        <div class="col-12 d-flex flex-wrap gap-2 justify-content-between align-items-center">
+            @if (Model.Any())
+            {
+                <span class="badge bg-primary">@Model.Count() Property(ies)</span>
+            }
+            <div>
+                <a asp-action="Create" class="btn btn-sm btn-success">
+                    <i class="fas fa-plus"></i> Add
+                </a>
+                <a asp-controller="Employee" asp-action="Index" class="btn btn-sm btn-outline-secondary">
+                    <i class="fas fa-users"></i> Employees
+                </a>
+            </div>
+        </div>
+    </div>
+
     @if (!Model.Any())
     {
-        <div class="card-professional animate-fade-in animate-delay-1">
-            <div class="empty-state">
-                <div class="empty-state-icon">
-                    <i class="fas fa-cog"></i>
-                </div>
-                <h4>No Properties Defined</h4>
-                <p>No custom properties have been defined yet. Click "Add New Property" to get started.</p>
-                <a asp-action="Create" class="btn btn-professional btn-primary mt-2">
-                    <i class="fas fa-plus-circle me-1"></i> Add First Property
-                </a>
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-cog fa-3x text-muted mb-3"></i>
+                <h5>No Properties Defined</h5>
+                <p class="text-muted">Click "Add" to create your first property.</p>
+                <a asp-action="Create" class="btn btn-primary">Add Property</a>
             </div>
         </div>
     }
     else
     {
-        <!-- Action Bar -->
-        <div class="d-flex justify-content-between align-items-center mb-4 animate-fade-in animate-delay-1">
-            <div>
-                <span class="badge bg-primary bg-opacity-10 text-primary fs-6">
-                    <i class="fas fa-cogs me-1"></i> @Model.Count() Property Definition(s)
-                </span>
-            </div>
-            <div>
-                <a asp-controller="Employee" asp-action="Index" class="btn btn-professional btn-outline-secondary">
-                    <i class="fas fa-users me-1"></i> Go to Employees
-                </a>
-            </div>
-        </div>
-
-        <!-- Property Table Card -->
-        <div class="card-professional animate-fade-in animate-delay-2">
+        <div class="card">
             <div class="table-responsive">
-                <table class="table table-professional mb-0">
-                    <thead>
+                <table class="table table-striped mb-0">
+                    <thead class="table-dark">
                         <tr>
-                            <th><i class="fas fa-hashtag me-1"></i> #</th>
-                            <th><i class="fas fa-tag me-1"></i> Property Name</th>
-                            <th><i class="fas fa-code me-1"></i> Type</th>
-                            <th><i class="fas fa-asterisk me-1"></i> Required</th>
-                            <th><i class="fas fa-list me-1"></i> Dropdown Values</th>
-                            <th class="text-center" style="width: 120px;"><i class="fas fa-cogs me-1"></i> Actions</th>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Required</th>
+                            <th style="width:80px">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var prop in Model)
                         {
                             <tr>
+                                <td>@prop.Id</td>
+                                <td><strong>@prop.Name</strong></td>
                                 <td>
-                                    <span class="text-muted">@prop.Id</span>
-                                </td>
-                                <td>
-                                    <span class="fw-semibold">@prop.Name</span>
-                                </td>
-                                <td>
-                                    @switch (prop.Type?.ToLower())
-                                    {
-                                        case "string":
-                                            <span class="badge badge-primary">
-                                                <i class="fas fa-font me-1"></i> String
-                                            </span>
-                                            break;
-                                        case "integer":
-                                            <span class="badge badge-info">
-                                                <i class="fas fa-hashtag me-1"></i> Integer
-                                            </span>
-                                            break;
-                                        case "date":
-                                            <span class="badge badge-warning">
-                                                <i class="fas fa-calendar me-1"></i> Date
-                                            </span>
-                                            break;
-                                        case "dropdown":
-                                            <span class="badge badge-success">
-                                                <i class="fas fa-list-ul me-1"></i> Dropdown
-                                            </span>
-                                            break;
-                                        default:
-                                            <span class="badge badge-secondary">@prop.Type</span>
-                                            break;
-                                    }
+                                    <span class="badge bg-info">@prop.Type</span>
                                 </td>
                                 <td>
                                     @if (prop.IsRequired)
                                     {
-                                        <span class="badge badge-danger">
-                                            <i class="fas fa-check me-1"></i> Yes
-                                        </span>
+                                        <span class="badge bg-danger">Yes</span>
                                     }
                                     else
                                     {
-                                        <span class="badge badge-secondary">
-                                            <i class="fas fa-minus me-1"></i> No
-                                        </span>
+                                        <span class="badge bg-secondary">No</span>
                                     }
                                 </td>
                                 <td>
-                                    @if (!string.IsNullOrEmpty(prop.DropdownExpectedValues))
-                                    {
-                                        <small class="text-muted">@prop.DropdownExpectedValues</small>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted fst-italic">—</span>
-                                    }
-                                </td>
-                                <td class="text-center">
-                                    <form asp-action="Delete" asp-route-id="@prop.Id" method="post"
-                                          onsubmit="return confirm('Are you sure you want to delete this property?');" class="d-inline">
+                                    <form asp-action="Delete" asp-route-id="@prop.Id" method="post" class="d-inline"
+                                          onsubmit="return confirm('Delete this property?');">
                                         @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-sm btn-professional btn-outline-danger" title="Delete Property">
-                                            <i class="fas fa-trash-alt"></i>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
                                 </td>

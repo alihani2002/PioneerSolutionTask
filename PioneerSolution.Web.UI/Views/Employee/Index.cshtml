@@ -5,99 +5,73 @@
 }
 
 <!-- Page Header -->
-<div class="page-header animate-fade-in">
+<div class="page-header">
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-8">
-                <h1><i class="fas fa-users me-2"></i>Employees</h1>
-                <p class="subtitle mb-0">Manage your employee records and custom properties</p>
-            </div>
-            <div class="col-md-4 text-md-end">
-                <a asp-action="Create" class="btn btn-professional btn-success">
-                    <i class="fas fa-user-plus me-1"></i> Add New Employee
-                </a>
-            </div>
-        </div>
+        <h1><i class="fas fa-users"></i> Employees</h1>
+        <p class="subtitle">Manage your employee records</p>
     </div>
 </div>
 
 <div class="container">
+    <!-- Actions -->
+    <div class="row mb-3">
+        <div class="col-12 d-flex flex-wrap gap-2 justify-content-between align-items-center">
+            @if (Model.Employees.Any())
+            {
+                <span class="badge bg-primary">@Model.Employees.Count Employee(s)</span>
+            }
+            <div>
+                <a asp-action="Create" class="btn btn-sm btn-success">
+                    <i class="fas fa-plus"></i> Add
+                </a>
+                <a asp-controller="Property" asp-action="Index" class="btn btn-sm btn-outline-secondary">
+                    <i class="fas fa-cog"></i> Properties
+                </a>
+            </div>
+        </div>
+    </div>
+
     @if (!Model.Employees.Any())
     {
-        <div class="card-professional animate-fade-in animate-delay-1">
-            <div class="empty-state">
-                <div class="empty-state-icon">
-                    <i class="fas fa-user-friends"></i>
-                </div>
-                <h4>No Employees Yet</h4>
-                <p>No employees have been added yet. Click "Add New Employee" to get started.</p>
-                <a asp-action="Create" class="btn btn-professional btn-primary mt-2">
-                    <i class="fas fa-user-plus me-1"></i> Add First Employee
-                </a>
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                <h5>No Employees Yet</h5>
+                <p class="text-muted">Click "Add" to create your first employee.</p>
+                <a asp-action="Create" class="btn btn-primary">Add Employee</a>
             </div>
         </div>
     }
     else
     {
-        <!-- Action Bar -->
-        <div class="d-flex justify-content-between align-items-center mb-4 animate-fade-in animate-delay-1">
-            <div>
-                <span class="badge bg-primary bg-opacity-10 text-primary fs-6">
-                    <i class="fas fa-users me-1"></i> @Model.Employees.Count Employee(s)
-                </span>
-            </div>
-            <div>
-                <a asp-controller="Property" asp-action="Index" class="btn btn-professional btn-outline-secondary">
-                    <i class="fas fa-cogs me-1"></i> Manage Properties
-                </a>
-            </div>
-        </div>
-
-        <!-- Employee Table Card -->
-        <div class="card-professional animate-fade-in animate-delay-2">
+        <div class="card">
             <div class="table-responsive">
-                <table class="table table-professional mb-0">
-                    <thead>
+                <table class="table table-striped mb-0">
+                    <thead class="table-dark">
                         <tr>
-                            <th><i class="fas fa-code me-1"></i> Code</th>
-                            <th><i class="fas fa-user me-1"></i> Name</th>
+                            <th>Code</th>
+                            <th>Name</th>
                             @foreach (var def in Model.PropertyDefinitions)
                             {
-                                <th><i class="fas fa-tag me-1"></i> @def.Name</th>
+                                <th>@def.Name</th>
                             }
-                            <th class="text-center" style="width: 120px;"><i class="fas fa-cogs me-1"></i> Actions</th>
+                            <th style="width:80px">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var emp in Model.Employees)
                         {
                             <tr>
-                                <td>
-                                    <span class="fw-semibold text-primary">@emp.Code</span>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar-circle bg-primary bg-gradient me-2">
-                                            <i class="fas fa-user"></i>
-                                        </div>
-                                        <span class="fw-medium">@emp.Name</span>
-                                    </div>
-                                </td>
+                                <td><strong>@emp.Code</strong></td>
+                                <td>@emp.Name</td>
                                 @foreach (var def in Model.PropertyDefinitions)
                                 {
                                     <td>
-                                        @if (emp.DynamicValues.ContainsKey(def.Id))
-                                        {
-                                            <span class="text-dark">@emp.DynamicValues[def.Id]</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="text-muted fst-italic">—</span>
-                                        }
+                                        @(emp.DynamicValues.ContainsKey(def.Id) ? emp.DynamicValues[def.Id] : "—")
                                     </td>
                                 }
-                                <td class="text-center">
-                                    <a asp-action="Edit" asp-route-id="@emp.Id" class="btn btn-sm btn-professional btn-outline-primary" title="Edit Employee">
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@emp.Id" class="btn btn-sm btn-outline-primary">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                 </td>
@@ -109,16 +83,3 @@
         </div>
     }
 </div>
-
-<style>
-    .avatar-circle {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        font-size: 0.875rem;
-    }
-</style>

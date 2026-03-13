@@ -5,196 +5,92 @@
 }
 
 <!-- Page Header -->
-<div class="page-header animate-fade-in">
+<div class="page-header">
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-8">
-                <h1><i class="fas fa-user-edit me-2"></i>Edit Employee</h1>
-                <p class="subtitle mb-0">Update the employee details and custom properties below</p>
-            </div>
-            <div class="col-md-4 text-md-end">
-                <a asp-action="Index" class="btn btn-professional btn-outline-light">
-                    <i class="fas fa-arrow-left me-1"></i> Back to List
-                </a>
-            </div>
-        </div>
+        <h1><i class="fas fa-user-edit"></i> Edit Employee</h1>
+        <p class="subtitle">Update employee details</p>
     </div>
 </div>
 
 <div class="container">
-    <div class="card-professional animate-fade-in animate-delay-1">
+    <div class="card">
         <div class="card-body">
-            <form asp-action="Edit" method="post" class="needs-validation" novalidate>
+            <form asp-action="Edit" method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" asp-for="Id" />
 
-                <!-- Basic Information Section -->
-                <fieldset class="mb-4">
-                    <legend class="fw-bold border-bottom pb-2">
-                        <i class="fas fa-user-circle me-2 text-primary"></i>Basic Information
-                    </legend>
+                <!-- Basic Info -->
+                <div class="mb-3">
+                    <label asp-for="Code" class="form-label">Employee Code *</label>
+                    <input asp-for="Code" class="form-control" required />
+                    <span asp-validation-for="Code" class="text-danger small"></span>
+                </div>
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="Code" class="form-label fw-bold">
-                                Employee Code <span class="text-danger">*</span>
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light">
-                                    <i class="fas fa-code"></i>
-                                </span>
-                                <input asp-for="Code" class="form-control" required />
-                            </div>
-                            <span asp-validation-for="Code" class="text-danger small"></span>
-                        </div>
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label">Employee Name *</label>
+                    <input asp-for="Name" class="form-control" required />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
 
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="Name" class="form-label fw-bold">
-                                Employee Name <span class="text-danger">*</span>
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light">
-                                    <i class="fas fa-user"></i>
-                                </span>
-                                <input asp-for="Name" class="form-control" required />
-                            </div>
-                            <span asp-validation-for="Name" class="text-danger small"></span>
-                        </div>
-                    </div>
-                </fieldset>
-
-                <!-- Dynamic Property Fields -->
+                <!-- Dynamic Properties -->
                 @if (Model.PropertyDefinitions.Any())
                 {
-                    <fieldset class="mb-4">
-                        <legend class="fw-bold border-bottom pb-2">
-                            <i class="fas fa-sliders-h me-2 text-primary"></i>Custom Properties
-                        </legend>
+                    <hr />
+                    <h5 class="mb-3">Custom Properties</h5>
+                    
+                    @foreach (var prop in Model.PropertyDefinitions)
+                    {
+                        var currentValue = Model.PropertyValues.ContainsKey(prop.Id) ? Model.PropertyValues[prop.Id] : "";
+                        
+                        <div class="mb-3">
+                            <label class="form-label">
+                                @prop.Name
+                                @if (prop.IsRequired)
+                                {
+                                    <span class="text-danger">*</span>
+                                }
+                            </label>
 
-                        <div class="row">
-                            @foreach (var prop in Model.PropertyDefinitions)
+                            @switch (prop.Type.ToLower())
                             {
-                                var currentValue = Model.PropertyValues.ContainsKey(prop.Id) ? Model.PropertyValues[prop.Id] : "";
-
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold">
-                                        @prop.Name
-                                        @if (prop.IsRequired)
+                                case "string":
+                                    <input type="text" class="form-control" name="PropertyValues[@prop.Id]" 
+                                           value="@currentValue" @(prop.IsRequired ? "required" : "") />
+                                    break;
+                                case "integer":
+                                    <input type="number" class="form-control" name="PropertyValues[@prop.Id]"
+                                           value="@currentValue" @(prop.IsRequired ? "required" : "") />
+                                    break;
+                                case "date":
+                                    <input type="date" class="form-control" name="PropertyValues[@prop.Id]"
+                                           value="@currentValue" @(prop.IsRequired ? "required" : "") />
+                                    break;
+                                case "dropdown":
+                                    <select class="form-select" name="PropertyValues[@prop.Id]"
+                                            @(prop.IsRequired ? "required" : ""))>
+                                        <option value="">-- Select --</option>
+                                        @if (!string.IsNullOrEmpty(prop.DropdownExpectedValues))
                                         {
-                                            <span class="text-danger">*</span>
+                                            @foreach (var opt in prop.DropdownExpectedValues.Split(',', System.StringSplitOptions.TrimEntries))
+                                            {
+                                                <option value="@opt" selected="@(opt == currentValue)">@opt</option>
+                                            }
                                         }
-                                    </label>
-
-                                    @switch (prop.Type.ToLower())
-                                    {
-                                        case "string":
-                                            <div class="input-group">
-                                                <span class="input-group-text bg-light">
-                                                    <i class="fas fa-font"></i>
-                                                </span>
-                                                <input type="text" class="form-control"
-                                                       name="PropertyValues[@prop.Id]"
-                                                       value="@currentValue"
-                                                       @(prop.IsRequired ? "required" : "") />
-                                            </div>
-                                            break;
-
-                                        case "integer":
-                                            <div class="input-group">
-                                                <span class="input-group-text bg-light">
-                                                    <i class="fas fa-hashtag"></i>
-                                                </span>
-                                                <input type="number" class="form-control"
-                                                       name="PropertyValues[@prop.Id]"
-                                                       value="@currentValue"
-                                                       @(prop.IsRequired ? "required" : "") />
-                                            </div>
-                                            break;
-
-                                        case "date":
-                                            <div class="input-group">
-                                                <span class="input-group-text bg-light">
-                                                    <i class="fas fa-calendar-alt"></i>
-                                                </span>
-                                                <input type="date" class="form-control"
-                                                       name="PropertyValues[@prop.Id]"
-                                                       value="@currentValue"
-                                                       @(prop.IsRequired ? "required" : "") />
-                                            </div>
-                                            break;
-
-                                        case "dropdown":
-                                            <div class="input-group">
-                                                <span class="input-group-text bg-light">
-                                                    <i class="fas fa-list-ul"></i>
-                                                </span>
-                                                <select class="form-select"
-                                                        name="PropertyValues[@prop.Id]"
-                                                        @(prop.IsRequired ? "required" : ""))>
-                                                    <option value="">-- Select --</option>
-                                                    @if (!string.IsNullOrEmpty(prop.DropdownExpectedValues))
-                                                    {
-                                                        @foreach (var option in prop.DropdownExpectedValues.Split(',', System.StringSplitOptions.TrimEntries))
-                                                        {
-                                                            <option value="@option" selected="@(option == currentValue)">@option</option>
-                                                        }
-                                                    }
-                                                </select>
-                                            </div>
-                                            break;
-
-                                        default:
-                                            <input type="text" class="form-control"
-                                                   name="PropertyValues[@prop.Id]"
-                                                   value="@currentValue" />
-                                            break;
-                                    }
-                                </div>
+                                    </select>
+                                    break;
                             }
                         </div>
-                    </fieldset>
-                }
-                else
-                {
-                    <div class="alert alert-warning d-flex align-items-center" role="alert">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        <div>
-                            No custom properties defined yet.
-                            <a asp-controller="Property" asp-action="Create" class="alert-link">Create one here</a>.
-                        </div>
-                    </div>
+                    }
                 }
 
-                <!-- Action Buttons -->
-                <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
-                    <a asp-action="Index" class="btn btn-professional btn-secondary">
-                        <i class="fas fa-times me-1"></i> Cancel
-                    </a>
-                    <button type="submit" class="btn btn-professional btn-success">
-                        <i class="fas fa-save me-1"></i> Save Changes
+                <!-- Buttons -->
+                <div class="mt-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Save Changes
                     </button>
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script>
-        // Form validation
-        (function () {
-            'use strict'
-            var forms = document.querySelectorAll('.needs-validation')
-            Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-        })()
-    </script>
-}
