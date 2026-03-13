@@ -42,7 +42,7 @@ PioneerSolution/
 
 | Component | Technology |
 |-----------|------------|
-| **Framework** | ASP.NET Core 8.0 |
+| **Framework** | ASP.NET Core 10.0 |
 | **Database** | Microsoft SQL Server |
 | **ORM** | Entity Framework Core |
 | **Frontend** | Bootstrap 5, Font Awesome 6 |
