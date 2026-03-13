@@ -14,20 +14,17 @@ public class PropertyController : Controller
         _propertyService = propertyService;
     }
 
-    // GET: Property
     public async Task<IActionResult> Index()
     {
         var properties = await _propertyService.GetAllAsync();
         return View(properties);
     }
 
-    // GET: Property/Create
     public IActionResult Create()
     {
         return View(new AddPropertyViewModel());
     }
 
-    // POST: Property/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(AddPropertyViewModel model)
@@ -48,7 +45,6 @@ public class PropertyController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // POST: Property/Delete/5
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)

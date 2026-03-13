@@ -32,6 +32,11 @@ public class EmployeeService : IEmployeeService
             .FirstOrDefaultAsync(e => e.Id == id);
     }
 
+    public async Task<Employee?> GetByCodeAsync(string code)
+    {
+        return await _context.Employees.FirstOrDefaultAsync(e => e.Code == code);
+    }
+
     public async Task CreateAsync(Employee employee, Dictionary<int, string> propertyValues)
     {
         // Add the employee first

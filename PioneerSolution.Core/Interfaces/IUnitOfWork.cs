@@ -1,10 +1,12 @@
+using PioneerSolution.Core.Models;
+
 namespace PioneerSolution.Core.Interfaces;
 
 public interface IUnitOfWork : IDisposable
 {
-    IGenericRepository<Models.Employee> Employees { get; }
-    IGenericRepository<Models.PropertyDefinition> PropertyDefinitions { get; }
-    IGenericRepository<Models.EmployeePropertyValue> EmployeePropertyValues { get; }
+    IGenericRepository<Employee> Employees { get; }
+    IGenericRepository<PropertyDefinition> PropertyDefinitions { get; }
+    IGenericRepository<EmployeePropertyValue> EmployeePropertyValues { get; }
 
     Task<int> CompleteAsync();
 }

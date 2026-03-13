@@ -16,7 +16,6 @@ public class EmployeeController : Controller
         _propertyService = propertyService;
     }
 
-    // GET: Employee
     public async Task<IActionResult> Index()
     {
         var employees = await _employeeService.GetAllWithPropertiesAsync();
@@ -39,7 +38,6 @@ public class EmployeeController : Controller
         return View(viewModel);
     }
 
-    // GET: Employee/Create
     public async Task<IActionResult> Create()
     {
         var definitions = await _propertyService.GetAllAsync();
@@ -52,14 +50,22 @@ public class EmployeeController : Controller
         return View(viewModel);
     }
 
-    // POST: Employee/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(AddEmployeeViewModel model)
     {
         if (!ModelState.IsValid)
         {
-            // Re-fetch definitions for the form re-render
+            var definitions = await _propertyService.GetAllAsync();
+            model.PropertyDefinitions = definitions.ToList();
+            return View(model);
+        }
+
+        // Check if an employee with the same code already exists
+        var existingEmployee = await _employeeService.GetByCodeAsync(model.Code);
+        if (existingEmployee != null)
+        {
+            ModelState.AddModelError("Code", "An employee with this code already exists.");
             var definitions = await _propertyService.GetAllAsync();
             model.PropertyDefinitions = definitions.ToList();
             return View(model);
@@ -76,7 +82,6 @@ public class EmployeeController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // GET: Employee/Edit/5
     public async Task<IActionResult> Edit(int id)
     {
         var employee = await _employeeService.GetByIdWithPropertiesAsync(id);
@@ -98,13 +103,22 @@ public class EmployeeController : Controller
         return View(viewModel);
     }
 
-    // POST: Employee/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(EditEmployeeViewModel model)
     {
         if (!ModelState.IsValid)
         {
+            var definitions = await _propertyService.GetAllAsync();
+            model.PropertyDefinitions = definitions.ToList();
+            return View(model);
+        }
+
+        // Check if another employee with the same code exists (excluding the current employee)
+        var existingEmployee = await _employeeService.GetByCodeAsync(model.Code);
+        if (existingEmployee != null && existingEmployee.Id != model.Id)
+        {
+            ModelState.AddModelError("Code", "An employee with this code already exists.");
             var definitions = await _propertyService.GetAllAsync();
             model.PropertyDefinitions = definitions.ToList();
             return View(model);
