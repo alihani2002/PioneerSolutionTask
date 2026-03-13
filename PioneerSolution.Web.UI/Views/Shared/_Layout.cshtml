@@ -4,73 +4,87 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - PioneerSolution</title>
+    <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/PioneerSolution.Web.UI.styles.css" asp-append-version="true" />
+    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-sm navbar-custom fixed-top">
-        <div class="container">
-            <a class="navbar-brand" asp-controller="Home" asp-action="Index">
-                PioneerSolution
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Home" asp-action="Index">
-                            <i class="fas fa-home"></i> <span>Home</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Employee" asp-action="Index">
-                            <i class="fas fa-users"></i> <span>Employees</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Property" asp-action="Index">
-                            <i class="fas fa-cogs"></i> <span>Properties</span>
-                        </a>
-                    </li>
-                </ul>
+    <!-- Professional Navbar -->
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-custom fixed-top">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    PioneerSolution
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home me-1"></i> <span class="d-inline d-sm-none">Home</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Employee" asp-action="Index">
+                                <i class="fas fa-users me-1"></i> <span class="d-inline d-sm-none">Employees</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Property" asp-action="Index">
+                                <i class="fas fa-cogs me-1"></i> <span class="d-inline d-sm-none">Properties</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">
+                                <i class="fas fa-shield-alt me-1"></i> <span class="d-inline d-sm-none">Privacy</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
     <!-- Main Content -->
-    <div class="container pt-4">
-        <main role="main">
+    <div class="container-fluid px-3 px-sm-4" style="padding-top: 70px;">
+        <main role="main" class="pb-5">
             @RenderBody()
         </main>
     </div>
 
-    <!-- Footer -->
+    <!-- Professional Footer -->
     <footer class="footer-custom">
         <div class="container">
-            <div class="row text-center text-md-start">
-                <div class="col-12 col-md-6 mb-2 mb-md-0">
-                    <div class="footer-brand">PioneerSolution</div>
-                    <small>Employee Management System</small>
+            <div class="row">
+                <div class="col-12 col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    <div class="footer-brand">
+                        <i class="fas fa-layer-group me-2"></i>PioneerSolution
+                    </div>
+                    <p class="mb-0 small">Employee Management System</p>
                 </div>
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-6 text-center text-md-end">
                     <ul class="footer-links">
-                        <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li><a asp-controller="Employee" asp-action="Index">Employees</a></li>
-                        <li><a asp-controller="Property" asp-action="Index">Properties</a></li>
+                        <li><a asp-controller="Home" asp-action="Index"><i class="fas fa-home me-1"></i> Home</a></li>
+                        <li><a asp-controller="Employee" asp-action="Index"><i class="fas fa-users me-1"></i> Employees</a></li>
+                        <li><a asp-controller="Property" asp-action="Index"><i class="fas fa-cogs me-1"></i> Properties</a></li>
                     </ul>
                 </div>
             </div>
-            <div class="footer-bottom">
-                &copy; 2026 PioneerSolution. All rights reserved.
+            <div class="footer-bottom text-center">
+                <p class="mb-0">&copy; 2026 PioneerSolution. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
