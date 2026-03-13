@@ -1,0 +1,109 @@
+@model PioneerSolution.Services.DTOs.EditEmployeeViewModel
+
+@{
+    ViewData["Title"] = "Edit Employee";
+}
+
+<div class="container mt-4">
+    <h2>Edit Employee</h2>
+    <p class="text-muted">Update the employee details and custom properties below.</p>
+
+    <div class="card shadow-sm mt-3">
+        <div class="card-body">
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+
+                @* ===== Mandatory Employee Fields ===== *@
+                <fieldset class="mb-4">
+                    <legend class="fw-bold border-bottom pb-2">Basic Information</legend>
+
+                    <div class="mb-3">
+                        <label asp-for="Code" class="form-label fw-bold">Employee Code <span class="text-danger">*</span></label>
+                        <input asp-for="Code" class="form-control" required />
+                        <span asp-validation-for="Code" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label fw-bold">Employee Name <span class="text-danger">*</span></label>
+                        <input asp-for="Name" class="form-control" required />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                </fieldset>
+
+                @* ===== Dynamic Property Fields ===== *@
+                @if (Model.PropertyDefinitions.Any())
+                {
+                    <fieldset class="mb-4">
+                        <legend class="fw-bold border-bottom pb-2">Custom Properties</legend>
+
+                        @foreach (var prop in Model.PropertyDefinitions)
+                        {
+                            var currentValue = Model.PropertyValues.ContainsKey(prop.Id) ? Model.PropertyValues[prop.Id] : "";
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">
+                                    @prop.Name
+                                    @if (prop.IsRequired)
+                                    {
+                                        <span class="text-danger">*</span>
+                                    }
+                                </label>
+
+                                @switch (prop.Type.ToLower())
+                                {
+                                    case "string":
+                                        <input type="text" class="form-control"
+                                               name="PropertyValues[@prop.Id]"
+                                               value="@currentValue"
+                                               @(prop.IsRequired ? "required" : "") />
+                                        break;
+
+                                    case "integer":
+                                        <input type="number" class="form-control"
+                                               name="PropertyValues[@prop.Id]"
+                                               value="@currentValue"
+                                               @(prop.IsRequired ? "required" : "") />
+                                        break;
+
+                                    case "date":
+                                        <input type="date" class="form-control"
+                                               name="PropertyValues[@prop.Id]"
+                                               value="@currentValue"
+                                               @(prop.IsRequired ? "required" : "") />
+                                        break;
+
+                                    case "dropdown":
+                                        <select class="form-select"
+                                                name="PropertyValues[@prop.Id]"
+                                                @(prop.IsRequired ? "required" : "")>
+                                            <option value="">-- Select --</option>
+                                            @if (!string.IsNullOrEmpty(prop.DropdownExpectedValues))
+                                            {
+                                                @foreach (var option in prop.DropdownExpectedValues.Split(',', System.StringSplitOptions.TrimEntries))
+                                                {
+                                                    <option value="@option" selected="@(option == currentValue)">@option</option>
+                                                }
+                                            }
+                                        </select>
+                                        break;
+
+                                    default:
+                                        <input type="text" class="form-control"
+                                               name="PropertyValues[@prop.Id]"
+                                               value="@currentValue" />
+                                        break;
+                                }
+                            </div>
+                        }
+                    </fieldset>
+                }
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-success px-4">Save Changes</button>
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

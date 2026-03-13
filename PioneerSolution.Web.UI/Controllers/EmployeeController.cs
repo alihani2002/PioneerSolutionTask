@@ -75,4 +75,43 @@ public class EmployeeController : Controller
 
         return RedirectToAction(nameof(Index));
     }
+
+    // GET: Employee/Edit/5
+    public async Task<IActionResult> Edit(int id)
+    {
+        var employee = await _employeeService.GetByIdWithPropertiesAsync(id);
+        if (employee == null) return NotFound();
+
+        var definitions = await _propertyService.GetAllAsync();
+
+        var viewModel = new EditEmployeeViewModel
+        {
+            Id = employee.Id,
+            Code = employee.Code,
+            Name = employee.Name,
+            PropertyDefinitions = definitions.ToList(),
+            PropertyValues = employee.PropertyValues.ToDictionary(
+                pv => pv.PropertyDefinitionId,
+                pv => pv.Value)
+        };
+
+        return View(viewModel);
+    }
+
+    // POST: Employee/Edit/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(EditEmployeeViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            var definitions = await _propertyService.GetAllAsync();
+            model.PropertyDefinitions = definitions.ToList();
+            return View(model);
+        }
+
+        await _employeeService.UpdateAsync(model.Id, model.Code, model.Name, model.PropertyValues ?? new Dictionary<int, string>());
+
+        return RedirectToAction(nameof(Index));
+    }
 }

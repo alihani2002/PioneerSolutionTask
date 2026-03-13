@@ -37,6 +37,7 @@
                                 {
                                     <th>@def.Name</th>
                                 }
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -58,6 +59,11 @@
                                             }
                                         </td>
                                     }
+                                    <td>
+                                        <a asp-action="Edit" asp-route-id="@emp.Id" class="btn btn-sm btn-outline-primary">
+                                            Edit
+                                        </a>
+                                    </td>
                                 </tr>
                             }
                         </tbody>

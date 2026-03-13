@@ -55,4 +55,36 @@ public class EmployeeService : IEmployeeService
 
         await _unitOfWork.CompleteAsync();
     }
+
+    public async Task UpdateAsync(int employeeId, string code, string name, Dictionary<int, string> propertyValues)
+    {
+        var employee = await _context.Employees
+            .Include(e => e.PropertyValues)
+            .FirstOrDefaultAsync(e => e.Id == employeeId);
+
+        if (employee == null) return;
+
+        // Update basic fields
+        employee.Code = code;
+        employee.Name = name;
+
+        // Remove existing property values
+        _context.EmployeePropertyValues.RemoveRange(employee.PropertyValues);
+
+        // Add updated property values
+        foreach (var kvp in propertyValues)
+        {
+            if (!string.IsNullOrWhiteSpace(kvp.Value))
+            {
+                employee.PropertyValues.Add(new EmployeePropertyValue
+                {
+                    EmployeeId = employee.Id,
+                    PropertyDefinitionId = kvp.Key,
+                    Value = kvp.Value
+                });
+            }
+        }
+
+        await _context.SaveChangesAsync();
+    }
 }
