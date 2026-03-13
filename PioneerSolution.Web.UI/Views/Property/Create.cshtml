@@ -1,0 +1,118 @@
+@model PioneerSolution.Services.DTOs.AddPropertyViewModel
+
+@{
+    ViewData["Title"] = "Create Property";
+}
+
+<div class="container mt-4">
+    <h2>Create New Property</h2>
+    <p class="text-muted">Define a new custom property that will appear on the Employee creation form.</p>
+
+    <div class="card shadow-sm mt-3">
+        <div class="card-body">
+            <form asp-action="Create" method="post" id="propertyForm">
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label fw-bold">Property Name</label>
+                    <input asp-for="Name" class="form-control" placeholder="e.g., Date of Birth" required />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                @* ===== Property Type as Radio Buttons ===== *@
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Property Type</label>
+                    <div class="d-flex flex-wrap gap-3 mt-1">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="Type" id="typeString" value="String" checked />
+                            <label class="form-check-label" for="typeString">String</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="Type" id="typeInteger" value="Integer" />
+                            <label class="form-check-label" for="typeInteger">Integer</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="Type" id="typeDate" value="Date" />
+                            <label class="form-check-label" for="typeDate">Date</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="Type" id="typeDropdown" value="Dropdown" />
+                            <label class="form-check-label" for="typeDropdown">Dropdown</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3 form-check">
+                    <input asp-for="IsRequired" class="form-check-input" />
+                    <label asp-for="IsRequired" class="form-check-label fw-bold">Is Required?</label>
+                </div>
+
+                @* ===== Dropdown Choices — Dynamic Add/Remove ===== *@
+                <div class="mb-3" id="dropdownValuesSection" style="display: none;">
+                    <label class="form-label fw-bold">Dropdown Choices</label>
+                    <div id="choicesList"></div>
+                    <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="addChoiceBtn">
+                        + Add Choice
+                    </button>
+                    <small class="d-block text-muted mt-1">Add the expected options for this dropdown.</small>
+                    <!-- Hidden field that will hold the comma-joined values on submit -->
+                    <input type="hidden" name="DropdownExpectedValues" id="hiddenDropdownValues" />
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary px-4">Create</button>
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Toggle dropdown section based on radio selection
+        document.querySelectorAll('input[name="Type"]').forEach(function (radio) {
+            radio.addEventListener('change', function () {
+                var section = document.getElementById('dropdownValuesSection');
+                section.style.display = this.value === 'Dropdown' ? 'block' : 'none';
+            });
+        });
+
+        // Add a new choice input row
+        document.getElementById('addChoiceBtn').addEventListener('click', function () {
+            addChoiceRow('');
+        });
+
+        function addChoiceRow(value) {
+            var list = document.getElementById('choicesList');
+            var row = document.createElement('div');
+            row.className = 'd-flex align-items-center gap-2 mb-2';
+            row.innerHTML =
+                '<input type="text" class="form-control choice-input" placeholder="Enter choice value" value="' + value + '" />' +
+                '<button type="button" class="btn btn-outline-danger btn-sm remove-choice-btn">&times;</button>';
+            list.appendChild(row);
+
+            row.querySelector('.remove-choice-btn').addEventListener('click', function () {
+                row.remove();
+            });
+        }
+
+        // Before submit, join all choice inputs into hidden field
+        document.getElementById('propertyForm').addEventListener('submit', function () {
+            var inputs = document.querySelectorAll('.choice-input');
+            var values = [];
+            inputs.forEach(function (input) {
+                var val = input.value.trim();
+                if (val) values.push(val);
+            });
+            document.getElementById('hiddenDropdownValues').value = values.join(',');
+        });
+
+        // Add one empty row by default if Dropdown is pre-selected
+        var checkedRadio = document.querySelector('input[name="Type"]:checked');
+        if (checkedRadio && checkedRadio.value === 'Dropdown') {
+            document.getElementById('dropdownValuesSection').style.display = 'block';
+            addChoiceRow('');
+        }
+    </script>
+}

@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="PioneerSolution.Web.UI/PioneerSolution.Web.UI.csproj" />
+  <Project Path="PioneerSolution.Core/PioneerSolution.Core.csproj" />
+  <Project Path="PioneerSolution.Data/PioneerSolution.Data.csproj" />
+  <Project Path="PioneerSolution.Services/PioneerSolution.Services.csproj" />
+</Solution>

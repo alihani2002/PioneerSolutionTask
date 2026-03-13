@@ -1,0 +1,69 @@
+@model PioneerSolution.Services.DTOs.EmployeeListViewModel
+
+@{
+    ViewData["Title"] = "Employees";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Employees</h2>
+        <div>
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-person-plus"></i> Add New Employee
+            </a>
+            <a asp-controller="Property" asp-action="Index" class="btn btn-outline-secondary ms-2">
+                Manage Properties
+            </a>
+        </div>
+    </div>
+
+    @if (!Model.Employees.Any())
+    {
+        <div class="alert alert-info">
+            No employees have been added yet. Click "Add New Employee" to get started.
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Code</th>
+                                <th>Name</th>
+                                @foreach (var def in Model.PropertyDefinitions)
+                                {
+                                    <th>@def.Name</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var emp in Model.Employees)
+                            {
+                                <tr>
+                                    <td>@emp.Code</td>
+                                    <td>@emp.Name</td>
+                                    @foreach (var def in Model.PropertyDefinitions)
+                                    {
+                                        <td>
+                                            @if (emp.DynamicValues.ContainsKey(def.Id))
+                                            {
+                                                @emp.DynamicValues[def.Id]
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">—</span>
+                                            }
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
