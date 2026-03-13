@@ -52,9 +52,9 @@ PioneerSolution/
 
 ### Prerequisites
 
-- .NET 8.0 SDK or later
+- .NET 10.0 SDK or later
 - SQL Server (LocalDB or Express)
-- Visual Studio 2022 or VS Code
+- Visual Studio 2026 or VS Code
 
 ### Installation
 
@@ -67,13 +67,6 @@ PioneerSolution/
 2. **Update connection string**
    
    Edit `PioneerSolution.Web.UI/appsettings.json`:
-   ```json
-   {
-     "ConnectionStrings": {
-       "DefaultConnection": "Server=YOUR_SERVER;Database=PioneerSolution;Trusted_Connection=True;TrustServerCertificate=True;"
-     }
-   }
-   ```
 
 3. **Run database migrations**
    ```bash
